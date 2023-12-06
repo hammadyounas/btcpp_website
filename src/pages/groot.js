@@ -20,14 +20,26 @@ function Cross(props) {
 }
 export default function Groot() {
 
+  useEffect(() => {
+    const el = document.createElement("script");
+    el.onload = () => {
+      Chargebee?.init({
+        site: "aurynrobotics",
+      });
+      Chargebee?.registerAgain();
+    };
+    el.setAttribute("src", "https://js.chargebee.com/v2/chargebee.js");
+    document.body?.appendChild(el);
+  },[]);
+
   const handleClickBasic = () => {
     console.log('free')
     scrollToSection('sectionDownload')
   }
   const handleClickPro = () => {
     console.log('Pro')
-    window.location.href = 'mailto:license@aurynrobotics.com'
-  }
+    // window.location.href = 'mailto:license@aurynrobotics.com'
+  };
   const obj = [
     {
       name: "Basic",
@@ -50,7 +62,7 @@ export default function Groot() {
         "Interactive real-time debugger",
         "Technical support",
       ],
-      btn: "Contact",
+      btn: "Subscribe",
       onclick: () => handleClickPro()
     },
     {
@@ -125,9 +137,11 @@ export default function Groot() {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   return (
-    <Layout title='Groot' description='Groot Editor'>
-      {/* groot intro */}
+    <>
+      <Layout title='Groot' description='Groot Editor'>
+        {/* groot intro */}
 
       <div className={clsx("hero hero--dark", styles.heroBanner)}>
         <div className='container '>
@@ -257,45 +271,66 @@ export default function Groot() {
       </div>
 
       <div className={`${styles.sectionSeparator} container`}>Pricing</div>
-
       <div className={`styles.sectionText`}>
         <div className={`container `}>
           <div className={`row`} id='row_price'>
-            {obj?.map((item) => (
-              <div
-                className='col col--4 '
-                id='card_col'
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}>
-                <div id='card'>
-                  <div id='card_header'>{item.name}</div>
-                  <div id='price_row'>
-                    <div id='price'>{item.price}</div>
-                    <div id='durance'>{item.durance}</div>
-                  </div>
-
-                  <ul id='point_stack' as='ul'>
-                    {item.points.map((p) => (
-                      <li id='point' as='li'>
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    <button
-                      id='btn'
-                      data-mooform-id='419144d7-9877-4876-bcfc-d1e1f0b6a2ad'
-                      className='button button--primary button--md'
-                      onClick={item.onclick}>
-                      {item.btn}
-                    </button>
+              {obj?.map((item, index) => (
+                <div
+                  className='col col--4 '
+                  id='card_col'
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}>
+                  <div id="card">
+                    <div id="card_header">{item.name}</div>
+                    <div id="price_row">
+                      <div id="price">{item.price}</div>
+                      <div id="durance">{item.durance}</div>
+                    </div>
+                    <ul id="point_stack" as="ul">
+                      {item.points.map((p) => (
+                        <li id="point" as="li">
+                          {p}
+                        </li>
+                      ))}
+                    </ul>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      {index == 1 ? (
+                        <a
+                          id="btn"
+                          className="button button--primary button--md"
+                          href="javascript:void(0)"
+                          data-cb-type="checkout"
+                          data-cb-item-0="Groot2-License-EUR-Yearly"
+                          data-cb-item-0-quantity="1"
+                        >
+                          {item.btn}
+                        </a>
+                      ) : index == 2 ? (
+                        <a
+                          id="btn"
+                          className="button button--primary button--md"
+                          target="blank"
+                          href="https://airtable.com/embed/appqTlC23AiSoB4Fd/shrTx7NgRIa0cKlK8?backgroundColor=green"
+                        >
+                          {item.btn}
+                        </a>
+                      ) : (
+                        <button
+                          id="btn"
+                          data-mooform-id="419144d7-9877-4876-bcfc-d1e1f0b6a2ad"
+                          className="button button--primary button--md"
+                          onClick={item.onclick}
+                        >
+                          {item?.btn}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           <div className='row'>
             <div className='col col--2 '></div>
             <div className='col col--8 '>
@@ -378,5 +413,6 @@ export default function Groot() {
         </div>
       </div>
     </Layout>
+  </>
   );
 }
