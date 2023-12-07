@@ -11,6 +11,7 @@ import clsx from "clsx";
 import EditorVideo from "@site/static/img/groot2_editor.mp4";
 import MonitorVideo from "@site/static/img/groot2_monitor.mp4";
 import LogVideo from "@site/static/img/groot2_log.mp4";
+import ContactFormModal from "../components/ContactFormModal";
 
 function Check(props) {
   return <img src={useBaseUrl("img/check.png")} width='15' alt='yes' />;
@@ -22,6 +23,7 @@ function Cross(props) {
 export default function Groot() {
 
   const [chargebeeInitialized, setChargebeeInitialized] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!chargebeeInitialized) {
@@ -55,6 +57,7 @@ export default function Groot() {
   }
   const handleClickPro = () => {
     console.log('Pro')
+    setOpen(true)
     // window.location.href = 'mailto:license@aurynrobotics.com'
   };
   const obj = [
@@ -155,11 +158,23 @@ export default function Groot() {
     }
   };
 
+
+  useEffect(() => {
+    if(open){
+     document.body.style.overflow = "hidden"
+    }else{
+      document.body.style.overflow = "auto"
+    }
+  },[open])
+
+
   return (
     <>
       <Layout title='Groot' description='Groot Editor'>
         {/* groot intro */}
-
+        {
+          open && <ContactFormModal handleClose={()=>setOpen(false)}/>
+        }
       <div className={clsx("hero hero--dark", styles.heroBanner)}>
         <div className='container '>
           <div className='row align-items-center'>
@@ -325,14 +340,14 @@ export default function Groot() {
                           {item.btn}
                         </a>
                       ) : index == 2 ? (
-                        <a
+                        <button
                           id="btn"
+                          data-mooform-id="419144d7-9877-4876-bcfc-d1e1f0b6a2ad"
                           className="button button--primary button--md"
-                          target="blank"
-                          href="https://airtable.com/embed/appqTlC23AiSoB4Fd/shrTx7NgRIa0cKlK8?backgroundColor=green"
+                          onClick={item.onclick}
                         >
-                          {item.btn}
-                        </a>
+                          {item?.btn}
+                        </button>
                       ) : (
                         <button
                           id="btn"
