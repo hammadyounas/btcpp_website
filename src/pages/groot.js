@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
@@ -18,19 +18,36 @@ function Check(props) {
 function Cross(props) {
   return <img src={useBaseUrl("img/cross.png")} width='15' alt='no' />;
 }
+
 export default function Groot() {
 
+  const [chargebeeInitialized, setChargebeeInitialized] = useState(false);
+
   useEffect(() => {
-    const el = document.createElement("script");
-    el.onload = () => {
-      Chargebee?.init({
-        site: "aurynrobotics",
-      });
-      Chargebee?.registerAgain();
-    };
-    el.setAttribute("src", "https://js.chargebee.com/v2/chargebee.js");
-    document.body?.appendChild(el);
-  },[]);
+    if (!chargebeeInitialized) {
+      const chargeBeeScript = document.getElementById("chargebeeScript");
+
+      if (!chargeBeeScript) {
+        const el = document.createElement("script");
+        el.onload = () => {
+          Chargebee?.init({
+            site: "aurynrobotics",
+          });
+          Chargebee?.registerAgain();
+          setChargebeeInitialized(true);
+        };
+        el.setAttribute("src", "https://js.chargebee.com/v2/chargebee.js");
+        el.setAttribute("id", "chargebeeScript");
+        document.body?.appendChild(el);
+      } else {
+        Chargebee.init({
+          site: "aurynrobotics",
+        });
+        Chargebee?.registerAgain();
+        setChargebeeInitialized(true);
+      }
+    }
+  }, [chargebeeInitialized]);
 
   const handleClickBasic = () => {
     console.log('free')
