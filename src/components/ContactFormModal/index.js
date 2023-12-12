@@ -3,18 +3,22 @@ import styles from "./styles.module.css";
 import emailjs from "@emailjs/browser";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
+const service = "service_inapp";
+const template = "template_y0r9ctv";
+const serviceKey = "c7EgqcHIdqFtoE1Ll";
+const toName = "hammad"
+
 const ContactFormModal = ({ handleClose }) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [value, setValue] = useState({
     name: "",
-    contact: "",
+    companyName: "",
     email: "",
     message: "",
   });
   const [errors, setErrors] = useState({
     name: "",
-    contact: "",
     email: "",
     message: "",
   });
@@ -38,10 +42,6 @@ const ContactFormModal = ({ handleClose }) => {
 
     if (!value.name.trim()) {
       newErrors.name = "Name is required";
-    }
-
-    if (!value.contact.trim()) {
-      newErrors.contact = "Contact Number is required";
     }
 
     if (!value.email.trim()) {
@@ -72,16 +72,17 @@ const ContactFormModal = ({ handleClose }) => {
     const templateParams = {
       from_name: value.name,
       message: value.message,
+      company_name: value.companyName,
       from_email: value.email,
-      to_name: "hammad",
+      to_name: toName,
     };
 
     emailjs
       .send(
-        "service_inapp",
-        "template_y0r9ctv",
+        service,
+        template,
         templateParams,
-        "c7EgqcHIdqFtoE1Ll"
+        serviceKey
       )
       .then(
         (response) => {
@@ -108,14 +109,20 @@ const ContactFormModal = ({ handleClose }) => {
             style={{ cursor: "pointer" }}
             src={useBaseUrl("img/cross.png")}
             alt="icon"
-            />
+          />
         </div>
         <div className={styles.scroll}>
           <div className={styles.formContainer}>
             {submitted ? (
-              <div style={{textAlign:'center', paddingTop:'20px',paddingBottom:"20px"}}>
+              <div
+                style={{
+                  textAlign: "center",
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                }}
+              >
                 <img width={"20%"} src={imageUrl} alt="icon" />
-                
+
                 <h2>Thank you for contact us!</h2>
                 <p>Our team member will contact you soon.</p>
               </div>
@@ -124,7 +131,7 @@ const ContactFormModal = ({ handleClose }) => {
                 <h2>Contact Us</h2>
                 <p>Tell us more about your needs</p>
                 <div>
-                  <label>Name</label>
+                  <label>Name <span className={styles.required}>*</span></label>
                   <input
                     type="text"
                     name="name"
@@ -134,17 +141,16 @@ const ContactFormModal = ({ handleClose }) => {
                   <span className={styles.error}>{errors.name}</span>
                 </div>
                 <div>
-                  <label>Contact Number</label>
+                  <label>Company Name <span className={styles.optional}>(optional)</span> </label>
                   <input
                     type="text"
-                    name="contact"
-                    value={value.contact}
+                    name="companyName"
+                    value={value.companyName}
                     onChange={handleChange}
                   />
-                  <span className={styles.error}>{errors.contact}</span>
                 </div>
                 <div>
-                  <label>Email</label>
+                  <label>Email <span className={styles.required}>*</span></label>
                   <input
                     type="text"
                     name="email"
@@ -154,7 +160,7 @@ const ContactFormModal = ({ handleClose }) => {
                   <span className={styles.error}>{errors.email}</span>
                 </div>
                 <div>
-                  <label>Message</label>
+                  <label>Message <span className={styles.required}>*</span></label>
                   <textarea
                     name="message"
                     cols={3}
@@ -173,16 +179,6 @@ const ContactFormModal = ({ handleClose }) => {
               </form>
             )}
           </div>
-          {/* <iframe
-          id="iframe"
-            class="airtable-embed"
-            src="https://airtable.com/embed/appqTlC23AiSoB4Fd/shrTx7NgRIa0cKlK8?backgroundColor=green"
-            frameborder="0"
-            onmousewheel=""
-            width="100%"
-            height="1100"
-            // height="1070"
-          ></iframe> */}
         </div>
       </div>
     </div>

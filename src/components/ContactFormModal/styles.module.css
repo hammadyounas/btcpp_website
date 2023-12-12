@@ -10,12 +10,10 @@
   overflow: auto;
   justify-content: center;
   align-items: center;
-  /* border-radius: 20px; */
 }
 
 .modalContent {
   background-color: hsl(0, 0%, 100%);
-  /* height: 800px; */
   width: 30%;
   padding: 30px;
   border-radius: 10px;
@@ -113,6 +111,13 @@ form div button {
 
 form div button:hover {
   background-color: #359962;
+}
+.optional{
+  color: gray;
+  font-size: 10px;
+}
+.required{
+  color: red;
 }
 
 @media only screen and (max-width: 768px) {
