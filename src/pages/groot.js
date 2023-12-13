@@ -164,15 +164,6 @@ export default function Groot() {
     }
   };
 
-
-  useEffect(() => {
-    if(openContactUsModal){
-      document.body.style.overflow = "hidden"
-    }else{
-      document.body.style.overflow = "auto"
-    }
-  },[openContactUsModal])
-
   const handleCloseUsModal = () => setOpenContactUsModal(false)
 
   return (
