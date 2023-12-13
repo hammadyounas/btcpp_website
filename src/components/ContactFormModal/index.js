@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import styles from "./styles.module.css";
 import emailjs from "@emailjs/browser";
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import styles from "./styles.module.css";
 
 const service = "service_inapp";
 const template = "template_y0r9ctv";
 const serviceKey = "c7EgqcHIdqFtoE1Ll";
-const toName = "hammad"
+const to_name = "hammad";
 
-const ContactFormModal = ({ handleClose }) => {
-  const [loading, setLoading] = useState(false);
+const ContactUSFormModal = ({ handleClose }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [value, setValue] = useState({
+  const [formData, setFormData] = useState({
     name: "",
     companyName: "",
     email: "",
@@ -23,7 +23,7 @@ const ContactFormModal = ({ handleClose }) => {
     message: "",
   });
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
 
     setErrors((prevErrors) => ({
@@ -31,75 +31,66 @@ const ContactFormModal = ({ handleClose }) => {
       [name]: "",
     }));
 
-    setValue((prevValues) => ({
+    setFormData((prevValues) => ({
       ...prevValues,
       [name]: value,
     }));
   };
 
   const validateFields = () => {
-    const newErrors = {};
+    const validationErrors = {};
 
-    if (!value.name.trim()) {
-      newErrors.name = "Name is required";
+    if (!formData.name.trim()) {
+      validationErrors.name = "Name is required";
     }
 
-    if (!value.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (
-      !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(value.email)
-    ) {
-      newErrors.email = "Invalid email format";
+    if (!formData.email.trim()) {
+      validationErrors.email = "Email is required";
+    }
+    else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(formData.email)) {
+      validationErrors.email = "Invalid email format";
     }
 
-    if (!value.message.trim()) {
-      newErrors.message = "Message is required";
+    if (!formData.message.trim()) {
+      validationErrors.message = "Message is required";
     }
 
-    setErrors(newErrors);
+    setErrors(validationErrors);
 
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(validationErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      if (!validateFields()) return;
+      setIsLoading(true);
 
-    if (!validateFields()) {
-      return;
-    }
-    setLoading(true);
+      const templateParams = {
+        from_name: formData.name,
+        message: formData.message,
+        company_name: formData.companyName,
+        from_email: formData.email,
+        to_name,
+      };
 
-    const templateParams = {
-      from_name: value.name,
-      message: value.message,
-      company_name: value.companyName,
-      from_email: value.email,
-      to_name: toName,
-    };
-
-    emailjs
-      .send(
+      await emailjs.send(
         service,
         template,
         templateParams,
         serviceKey
-      )
-      .then(
-        (response) => {
-          console.log("SUCCESS!", response.status, response.text);
-          setSubmitted(true);
-          setLoading(false);
-        },
-        (err) => {
-          console.log("FAILED...", err);
-        }
-      )
-      .finally(() => {
-        setLoading(false);
-      });
+      );
+
+      setSubmitted(true);
+      setIsLoading(false);
+    } catch (errors) {
+      setIsLoading(false);
+      console.log("FAILED...", errors);
+    }
   };
 
-  const imageUrl = useBaseUrl("img/done.png");
+  const successImageURL = useBaseUrl("img/done.png");
+
   return (
     <div className={styles.modal}>
       <div style={{ position: "relative" }} className={styles.modalContent}>
@@ -115,13 +106,9 @@ const ContactFormModal = ({ handleClose }) => {
           <div className={styles.formContainer}>
             {submitted ? (
               <div
-                style={{
-                  textAlign: "center",
-                  paddingTop: "20px",
-                  paddingBottom: "20px",
-                }}
+                className={styles.success}
               >
-                <img width={"20%"} src={imageUrl} alt="icon" />
+                <img width={"20%"} src={successImageURL} alt="icon" />
 
                 <h2>Thank you for contact us!</h2>
                 <p>Our team member will contact you soon.</p>
@@ -135,8 +122,8 @@ const ContactFormModal = ({ handleClose }) => {
                   <input
                     type="text"
                     name="name"
-                    value={value.name}
-                    onChange={handleChange}
+                    value={formData.name}
+                    onChange={handleInputChange}
                   />
                   <span className={styles.error}>{errors.name}</span>
                 </div>
@@ -145,8 +132,8 @@ const ContactFormModal = ({ handleClose }) => {
                   <input
                     type="text"
                     name="companyName"
-                    value={value.companyName}
-                    onChange={handleChange}
+                    value={formData.companyName}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div>
@@ -154,8 +141,8 @@ const ContactFormModal = ({ handleClose }) => {
                   <input
                     type="text"
                     name="email"
-                    value={value.email}
-                    onChange={handleChange}
+                    value={formData.email}
+                    onChange={handleInputChange}
                   />
                   <span className={styles.error}>{errors.email}</span>
                 </div>
@@ -165,15 +152,15 @@ const ContactFormModal = ({ handleClose }) => {
                     name="message"
                     cols={3}
                     rows={6}
-                    value={value.message}
-                    onChange={handleChange}
+                    value={formData.message}
+                    onChange={handleInputChange}
                   ></textarea>
                   <span className={styles.error}>{errors.message}</span>
                 </div>
                 <div>
-                  <button type="submit" disabled={loading}>
+                  <button type="submit" disabled={isLoading}>
                     {" "}
-                    {loading ? " Loading..." : "Send"}{" "}
+                    {isLoading ? " Loading..." : "Send"}{" "}
                   </button>
                 </div>
               </form>
@@ -185,4 +172,4 @@ const ContactFormModal = ({ handleClose }) => {
   );
 };
 
-export default ContactFormModal;
+export default ContactUSFormModal;

@@ -63,6 +63,8 @@
 
 .error{
   color: red;
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 form {
@@ -118,6 +120,12 @@ form div button:hover {
 }
 .required{
   color: red;
+}
+
+.success{
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 @media only screen and (max-width: 768px) {
