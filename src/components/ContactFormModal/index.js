@@ -6,7 +6,8 @@ import styles from "./styles.module.css";
 const service = "service_inapp";
 const template = "template_y0r9ctv";
 const serviceKey = "c7EgqcHIdqFtoE1Ll";
-const to_name = "hammad";
+const toName = "hammad";
+const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const ContactUSFormModal = ({ handleClose }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +48,7 @@ const ContactUSFormModal = ({ handleClose }) => {
     if (!formData.email.trim()) {
       validationErrors.email = "Email is required";
     }
-    else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(formData.email)) {
+    else if (!emailRegex.test(formData.email)) {
       validationErrors.email = "Invalid email format";
     }
 
@@ -71,7 +72,7 @@ const ContactUSFormModal = ({ handleClose }) => {
         message: formData.message,
         company_name: formData.companyName,
         from_email: formData.email,
-        to_name,
+        to_name: toName,
       };
 
       await emailjs.send(
@@ -83,6 +84,7 @@ const ContactUSFormModal = ({ handleClose }) => {
 
       setSubmitted(true);
       setIsLoading(false);
+
     } catch (errors) {
       setIsLoading(false);
       console.log("FAILED...", errors);
@@ -93,11 +95,11 @@ const ContactUSFormModal = ({ handleClose }) => {
 
   return (
     <div className={styles.modal}>
-      <div style={{ position: "relative" }} className={styles.modalContent}>
+      <div className={styles.modalContent}>
         <div className={styles.closeBtn}>
           <img
             onClick={handleClose}
-            style={{ cursor: "pointer" }}
+            className={styles.close}
             src={useBaseUrl("img/cross.png")}
             alt="icon"
           />
